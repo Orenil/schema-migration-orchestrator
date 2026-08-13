@@ -1,0 +1,27 @@
+{
+  "id": "backfill-user-status-v1",
+  "table": "users",
+  "description": "Add a nullable status column, backfill existing rows to 'active' in batches, then enforce NOT NULL via a NOT VALID + VALIDATE CONSTRAINT pair so the final lock is a quick metadata change, not a full-table scan under one lock.",
+  "steps": [
+    {
+      "type": "add_column",
+      "name": "add-status-column",
+      "column": "status",
+      "dataType": "text"
+    },
+    {
+      "type": "backfill",
+      "name": "backfill-status",
+      "pkColumn": "id",
+      "batchSize": 500,
+      "setClause": "status = 'active'",
+      "whereClause": "status IS NULL",
+      "batchDelayMs": 0
+    },
+    {
+      "type": "add_constraint",
+      "name": "enforce-status-not-null",
+      "sql": "ALTER TABLE users ADD CONSTRAINT status_not_null CHECK (status IS NOT NULL) NOT VALID; ALTER TABLE users VALIDATE CONSTRAINT status_not_null; ALTER TABLE users ALTER COLUMN status SET NOT NULL; ALTER TABLE users DROP CONSTRAINT status_not_null;"
+    }
+  ]
+}
