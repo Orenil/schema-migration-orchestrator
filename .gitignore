@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+
+# throwaway local Postgres cluster used by integration tests (scripts/pg-testcluster.sh)
+.pgdata-test/
+.pgdata-test.log
+
+# scratch files left behind by interrupted test runs
+.tmp-*.json
+
+*.log
+.DS_Store
+.env

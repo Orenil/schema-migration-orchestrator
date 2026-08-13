@@ -1,0 +1,32 @@
+{
+  "name": "schema-migration-orchestrator",
+  "version": "1.0.0",
+  "description": "Live-safe Postgres schema migration orchestrator: batched backfills, nullable-then-constrain column rollout, replication-lag auto-throttling, and resumable progress tracking.",
+  "license": "MIT",
+  "type": "commonjs",
+  "bin": {
+    "smorch": "dist/cli.js"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "ts-node src/cli.ts",
+    "pretest": "npm run build",
+    "test": "vitest run",
+    "test:unit": "vitest run test/throttle.test.ts test/progress-sql.test.ts",
+    "pg:start": "bash scripts/pg-testcluster.sh start",
+    "pg:stop": "bash scripts/pg-testcluster.sh stop",
+    "lint:types": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/pg": "^8.11.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
